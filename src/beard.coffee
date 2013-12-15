@@ -8,6 +8,7 @@ module.exports =
     @setup: (original) ->
       Beard.BASE = original
       Beard.BASE.geometry.applyMatrix(new THREE.Matrix4().makeScale(10, 10, 10))
+      Beard.BASE.material = new THREE.MeshLambertMaterial(color: 0xffffff, map: THREE.ImageUtils.loadTexture('images/beard.png'), transparent: true, opacity: 0.75, depthTest: false, depthWrite: false, shading: THREE.SmoothShading)
       Beard.BASE.alpha = []
       Beard.BASE.mass = []
       for v in @BASE.geometry.vertices
