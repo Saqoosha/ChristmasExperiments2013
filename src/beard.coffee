@@ -8,7 +8,9 @@ module.exports =
     @setup: (original) ->
       Beard.BASE = original
       Beard.BASE.geometry.applyMatrix(new THREE.Matrix4().makeScale(10, 10, 10))
-      Beard.BASE.material = new THREE.MeshLambertMaterial(color: 0xffffff, map: THREE.ImageUtils.loadTexture('images/beard.png'), transparent: true, opacity: 0.75, depthTest: false, depthWrite: false, shading: THREE.SmoothShading)
+      Beard.BASE.material0 = new THREE.MeshLambertMaterial(color: 0xffffff, map: THREE.ImageUtils.loadTexture('images/beard.png'), transparent: true, opacity: 0.75, depthTest: false, depthWrite: false, shading: THREE.SmoothShading)
+      Beard.BASE.material1 = new THREE.MeshLambertMaterial(color: 0xffffff, shading: THREE.FlatShading)
+      Beard.BASE.material = Beard.BASE.material0
       Beard.BASE.alpha = []
       Beard.BASE.mass = []
       for v in @BASE.geometry.vertices
@@ -18,6 +20,10 @@ module.exports =
         m = if v.z < 0 then 0 else Math.max(0, Math.min(0.9, -(v.y) / 20))
         Beard.BASE.mass.push(m)
         # console.log(v.y, a, m)
+
+    @SPRING: 70
+    @DAMPING: 1.5
+    @FORCE: 1.5
       
 
     tmp = new THREE.Matrix4()
@@ -58,7 +64,7 @@ module.exports =
       original = Beard.BASE.geometry.vertices
       alpha = Beard.BASE.alpha
       current = @object.geometry.vertices
-      k = 70
+      k = Beard.SPRING
       velocity = @velocity
       mass = Beard.BASE.mass
       for i in [0...original.length]
@@ -66,8 +72,8 @@ module.exports =
         if mass[i] < 0.1
           current[i].copy(target)
         else
-          damping.copy(velocity[i]).multiplyScalar(-1.5)
-          force.copy(current[i]).sub(target).multiplyScalar(-k).add(damping).multiplyScalar(1.5)
+          damping.copy(velocity[i]).multiplyScalar(-Beard.DAMPING)
+          force.copy(current[i]).sub(target).multiplyScalar(-k).add(damping).multiplyScalar(Beard.FORCE)
           acc.copy(force).multiplyScalar(1 / mass[i] * .016666667)
           velocity[i].add(acc)
           v.copy(velocity[i]).multiplyScalar(.01666666)

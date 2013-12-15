@@ -21,6 +21,10 @@ module.exports = (grunt) ->
           Stats:
             path: 'src/libs/stats.min.js'
             exports: 'Stats'
+          datgui:
+            path: 'src/libs/dat.gui.js'
+            exports: 'dat'
+
 
     coffee:
       options:

@@ -3,6 +3,8 @@ Stats = require('Stats')
 CalibratedCamera = require('./calibratedcamera.coffee')
 CameraQuad = require('./cameraquad.coffee')
 FaceMesh = require('./facemesh.coffee')
+Beard = require('./beard.coffee')
+dat = require('datgui')
 
 navigator.getUserMedia = navigator.getUserMedia or navigator.webkitGetUserMedia or navigator.mozGetUserMedia or navigator.msGetUserMedia
 
@@ -57,6 +59,7 @@ module.exports =
       @initCanvas()
       @initScene()
       @initObjects()
+      @initDebug()
       @animate()
       @trackImage()
 
@@ -91,15 +94,27 @@ module.exports =
       button.onclick = @takePhoto
       button.style.display = 'block'
 
-      @stats = new Stats()
-      container.appendChild(@stats.domElement)
-
 
     initObjects: =>
       @cameraQuad = new CameraQuad(@captureCanvas)
       @scene.add(@cameraQuad)
       @faceMesh = new FaceMesh(@scene)
-      # @scene.add(@faceMesh)
+      @faceMesh.visible = false
+      @scene.add(@faceMesh)
+
+
+    initDebug: =>
+      @stats = new Stats()
+      container.appendChild(@stats.domElement)
+
+      params = Debug: false
+      @gui = new dat.GUI()
+      @gui.add(params, 'Debug').onChange (value) =>
+        @faceMesh.setDebug(value)
+      @gui.add(Beard, 'SPRING', 1, 200)
+      @gui.add(Beard, 'DAMPING', 0, 3).step(0.01)
+      @gui.add(Beard, 'FORCE', 0, 3).step(0.01)
+      @gui.close()
 
 
     animate: =>

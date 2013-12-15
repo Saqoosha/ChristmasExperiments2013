@@ -38,6 +38,7 @@ module.exports =
       @updateMatrix()
       @frustumCulled = false
       @renderDepth = 1
+      @visible = false
 
       loader = new THREE.OBJLoader()
       loader.load 'images/beard.obj', (object) =>
@@ -222,5 +223,10 @@ module.exports =
     update: =>
       b.update() for b in @bristles
 
+
+    setDebug: (value) =>
+      @visible = value
+      m = if value then Beard.BASE.material1 else Beard.BASE.material0
+      b.object.material = m for b in @bristles
 
 
