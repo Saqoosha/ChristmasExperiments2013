@@ -54,11 +54,17 @@ module.exports =
           for y in [0...256] by 12
             for x in [0...256] by 12
               i = (y * 256 + x) * 4
-              # console.log(x, y, data.data[i])
               if data.data[i] > 32
                 uv = new THREE.Vector2(x + (Math.random() - 0.5) * 12, 256 - y + (Math.random() - 0.5) * 12)
                 uv.divideScalar(256)
                 @addBristle(uv, data.data[i] / 256)
+          for y in [0...256] by 6
+            for x in [0...256] by 6
+              i = (y * 256 + x) * 4 + 1
+              if data.data[i] > 32
+                uv = new THREE.Vector2(x + (Math.random() - 0.5) * 6, 256 - y + (Math.random() - 0.5) * 6)
+                uv.divideScalar(256)
+                @addBristle(uv, data.data[i] / 256 * 0.4)
 
       # loader = new THREE.OBJLoader()
       # loader.load 'images/hat.obj', (object) =>
