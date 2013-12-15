@@ -81,11 +81,15 @@ module.exports =
       light = new THREE.HemisphereLight(0xffffff, 0x888888, 0.7)
       @scene.add(light)
 
-      @renderer = new THREE.WebGLRenderer(antialias: true)
+      @renderer = new THREE.WebGLRenderer(antialias: true, preserveDrawingBuffer: true)
       @renderer.setSize(640, 480)
 
       container = document.getElementById('container')
       container.appendChild(@renderer.domElement)
+
+      button = document.getElementById('takeaphoto')
+      button.onclick = @takePhoto
+      button.style.display = 'block'
 
       @stats = new Stats()
       container.appendChild(@stats.domElement)
@@ -115,4 +119,11 @@ module.exports =
       @worker.postMessage(data.data.buffer, [data.data.buffer])
 
 
+    takePhoto: =>
+      e = document.createEvent('MouseEvents')
+      e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      a = document.createElement('a')
+      a.href = @renderer.domElement.toDataURL()
+      a.download = "santaclaus-#{Date.now()}.png"
+      a.dispatchEvent(e)
 
